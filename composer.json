@@ -1,0 +1,23 @@
+{
+    "name": "nagels/book-example",
+    "description": "An example project of how to migrate SQL to a Graph Database",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nagels\\BookExample\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ghlen",
+            "email": "ghlen@nagels.tech"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "laudis/neo4j-php-client": "^2.6",
+        "robmorgan/phinx": "^0.12.10",
+        "fakerphp/faker": "^1.19"
+    }
+}

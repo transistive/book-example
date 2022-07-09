@@ -1,0 +1,38 @@
+version: '3.9'
+
+networks:
+  book-example:
+
+services:
+  sql:
+    image: mariadb:10.5.9
+    container_name: 'book-example-sql'
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: sql
+      MYSQL_DATABASE: test
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=root
+      interval: 5s
+      retries: 5
+    networks:
+      - book-example
+  graph:
+    image: neo4j:4.4
+    container_name: 'book-example-graph'
+    restart: always
+    ports:
+      - '7687:7687'
+    environment:
+      NEO4J_AUTH: neo4j/test
+    healthcheck:
+      test: "wget -q --method=HEAD http://localhost:7474 || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - book-example
