@@ -18,6 +18,7 @@
         "ext-pdo": "*",
         "laudis/neo4j-php-client": "^2.6",
         "robmorgan/phinx": "^0.12.10",
-        "fakerphp/faker": "^1.19"
+        "fakerphp/faker": "^1.19",
+        "vlucas/phpdotenv": "^5.4"
     }
 }

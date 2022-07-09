@@ -2,7 +2,7 @@
 
 
 use Faker\Factory;
-use Nagels\BookExample\IterableChunker;
+use Nagels\BookExample\Helper;
 use Phinx\Seed\AbstractSeed;
 
 class CommentSeeder extends AbstractSeed
@@ -39,7 +39,7 @@ class CommentSeeder extends AbstractSeed
 
         $this->userIds = array_map(static fn (array $x) => $x['id'], $this->fetchAll('SELECT id FROM users'));
         $table = $this->table('comments');
-        foreach (IterableChunker::chunk($this->generateData(), 10) as $dataset) {
+        foreach (Helper::chunk($this->generateData(), 10) as $dataset) {
             $table->insert($dataset)
                   ->saveData();
         }
