@@ -10,15 +10,21 @@ class NodeRepository
     {
     }
 
-    public function storeRowsAsNodes(TablesEnum $table, iterable $rows, int $chunkSize = 200): void
+    public function storeRowsAsNodes(TablesEnum $table, iterable $rows, int $chunkSize = 200): int
     {
         $tag = $table->asTag();
+        $nodes = 0;
         foreach (Helper::chunk($rows, $chunkSize) as $chunk) {
-            $this->session->run(<<<CYPHER
+            $nodes += $this->session->run(<<<CYPHER
             UNWIND \$chunk as row
             MERGE (a:$tag {id: row['id']})
             ON CREATE SET a = row;
-            CYPHER, ['chunk' => $chunk]);
+            CYPHER, ['chunk' => $chunk])
+                ->getSummary()
+                ->getCounters()
+                ->nodesCreated();
         }
+
+        return $nodes;
     }
 }

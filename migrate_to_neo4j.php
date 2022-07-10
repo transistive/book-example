@@ -7,7 +7,7 @@ use Nagels\BookExample\PDORepository;
 use Nagels\BookExample\RelationshipRepository;
 use Nagels\BookExample\TablesEnum;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 $driver = Driver::create('neo4j://neo4j:test@localhost');
 $driver->verifyConnectivity() ?? throw new Error('Cannot connect to database');
