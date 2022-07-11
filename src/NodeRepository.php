@@ -3,6 +3,9 @@
 namespace Nagels\BookExample;
 
 use Laudis\Neo4j\Basic\Session;
+use Laudis\Neo4j\Databags\ResultSummary;
+use Laudis\Neo4j\Types\Node;
+use const PHP_EOL;
 
 class NodeRepository
 {
@@ -10,21 +13,55 @@ class NodeRepository
     {
     }
 
-    public function storeRowsAsNodes(TablesEnum $table, iterable $rows, int $chunkSize = 200): int
+    public function storeRowsAsNodes(TablesEnum $table, iterable $rows, int $chunkSize = 2000): ResultSummary
     {
         $tag = $table->asTag();
-        $nodes = 0;
-        foreach (Helper::chunk($rows, $chunkSize) as $chunk) {
-            $nodes += $this->session->run(<<<CYPHER
-            UNWIND \$chunk as row
-            MERGE (a:$tag {id: row['id']})
-            ON CREATE SET a = row;
-            CYPHER, ['chunk' => $chunk])
-                ->getSummary()
-                ->getCounters()
-                ->nodesCreated();
-        }
+        return $this->session->run(<<<CYPHER
+        UNWIND \$rows as row
+        MERGE (a:$tag {id: row['id']})
+        ON CREATE SET a = row;
+        CYPHER, ['rows' => $rows])->getSummary();
+    }
 
-        return $nodes;
+    public function listAllTags(int $articleId): array
+    {
+        return $this->session->run(<<<'CYPHER'
+        MATCH p = (:Article {id: $articleId}) <- [:HAS_PARENT*0..] - (:Article)
+        UNWIND nodes(p) AS article
+        WITH DISTINCT article
+        MATCH (article) <- [:TAGS] - (tag:Tag)
+        WITH DISTINCT tag
+        RETURN tag.tag AS tag
+        CYPHER, compact('articleId'))
+            ->pluck('tag')
+            ->toArray();
+    }
+
+    public function topCategoryNode(int $articleId): void
+    {
+        $node =  $this->session->run(<<<'CYPHER'
+        MATCH (c:Category) - [:CATEGORIZES] -> (node)
+        WITH node, collect(c) AS categoryDegree
+        RETURN node
+        ORDER BY categoryDegree DESC
+        LIMIT 1
+        CYPHER, compact('articleId'))
+            ->getAsCypherMap(0)
+            ->getAsNode('node');
+
+        echo 'LABEL: ' . $node->getLabels()->first() . PHP_EOL;
+        echo 'ID: ' . $node->getProperty('id') . PHP_EOL;
+    }
+
+    public function doubleCommenters(int $articleId): array
+    {
+        return $this->session->run(<<<'CYPHER'
+        MATCH (b:Article) <- [:COMMENTED_ON*1..] - (:Comment) <- [:Commented] - (u:User),
+              (u) - [:COMMENTED] -> (:Comment) - [:COMMENTED_ON*1..] -> (a:Article)
+        WHERE a <> b
+        RETURN DISTINCT u AS user
+        CYPHER)
+            ->pluck('user')
+            ->toArray();
     }
 }

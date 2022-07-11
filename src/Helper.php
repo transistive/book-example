@@ -2,8 +2,10 @@
 
 namespace Nagels\BookExample;
 
-use DateTime;
 use Generator;
+use Laudis\Neo4j\Databags\ResultSummary;
+use function round;
+use const PHP_EOL;
 
 class Helper
 {
@@ -31,5 +33,25 @@ class Helper
         foreach ($it as $x) {
             yield $map($x);
         }
+    }
+
+    public static function logCreatedNodes(TablesEnum $table, ResultSummary $summary): void
+    {
+        echo sprintf(
+            'Created %s nodes with label "%s" in %s seconds'.PHP_EOL,
+            $summary->getCounters()->nodesCreated(),
+            $table->asTag(),
+            round($summary->getResultConsumedAfter(), 3)
+        );
+    }
+
+    public static function logCreatedRelationships(string $type, ResultSummary $summary): void
+    {
+        echo sprintf(
+            'Created %s relationships with type "%s" in %s seconds'.PHP_EOL,
+            $summary->getCounters()->relationshipsCreated(),
+            $type,
+            round($summary->getResultConsumedAfter(), 3)
+        );
     }
 }

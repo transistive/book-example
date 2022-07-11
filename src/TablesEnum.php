@@ -2,7 +2,14 @@
 
 namespace Nagels\BookExample;
 
-use Error;
+$translationTable = [
+    'article_tags' => 'ArticleTag',
+    'articles' => 'Article',
+    'comments' => 'Comment',
+    'polymorphic_categories' => 'Category',
+    'tags' => 'Tag',
+    'users' => 'User',
+];
 
 enum TablesEnum : string
 {
@@ -21,7 +28,7 @@ enum TablesEnum : string
             self::COMMENTS => 'Comment',
             self::POLYMORPHIC_CATEGORIES => 'Category',
             self::USERS => 'User',
-            default => throw new Error(sprintf('Cannot use "%s" as a Tag', $this->value))
+            self::ARTICLE_TAGS => 'ArticleTag'
         };
     }
 }

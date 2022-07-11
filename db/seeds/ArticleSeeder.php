@@ -28,7 +28,7 @@ class ArticleSeeder extends AbstractSeed
     {
         $this->currentId = $this->fetchAll('SELECT id from articles ORDER BY id DESC LIMIT 1')[0]['id'] ?? 0;
         $table = $this->table('articles');
-        foreach (Helper::chunk($this->generateData(), 10) as $dataset) {
+        foreach (Helper::chunk($this->generateData(), 2000) as $dataset) {
             $table->insert($dataset)
                 ->saveData();
         }
@@ -48,7 +48,7 @@ class ArticleSeeder extends AbstractSeed
     private function addChildArticles(int $depth): Generator
     {
         $parentId = $this->currentId;
-        while ($this->faker->boolean(max(0, 66 - (2 * $depth)))) {
+        while ($this->faker->boolean(max(0, 66 - (1.5 * $depth)))) {
             yield $this->createArticle($parentId);
             yield from $this->addChildArticles($depth + 1);
         }

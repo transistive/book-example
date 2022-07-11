@@ -13,7 +13,7 @@ class PDORepository
     {
     }
 
-    public function yieldTable(TablesEnum $table): Generator
+    public function yieldRows(TablesEnum $table): Generator
     {
         $statement = $this->pdo->query(sprintf('SELECT * FROM %s', $table->value));
 
