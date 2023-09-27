@@ -8,7 +8,7 @@ RUN apt-get update \
     && docker-php-ext-install -j$(nproc) bcmath sockets pdo pdo_mysql \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug && \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 WORKDIR /opt/project
 
