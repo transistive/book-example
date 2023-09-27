@@ -5,7 +5,7 @@ RUN apt-get update \
         unzip \
         git \
         wget \
-    && docker-php-ext-install -j$(nproc) bcmath sockets \
+    && docker-php-ext-install -j$(nproc) bcmath sockets pdo pdo_mysql \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
