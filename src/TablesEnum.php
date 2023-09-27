@@ -2,15 +2,6 @@
 
 namespace Nagels\BookExample;
 
-$translationTable = [
-    'article_tags' => 'ArticleTag',
-    'articles' => 'Article',
-    'comments' => 'Comment',
-    'polymorphic_categories' => 'Category',
-    'tags' => 'Tag',
-    'users' => 'User',
-];
-
 enum TablesEnum : string
 {
     case ARTICLE_TAGS = 'article_tags';
