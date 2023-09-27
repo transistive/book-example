@@ -33,9 +33,9 @@ services:
       NEO4J_dbms_security_auth__minimum__password__length: 4
     healthcheck:
       test: "wget -q --method=HEAD http://localhost:7474 || exit 1"
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      interval: 1s
+      timeout: 1s
+      retries: 200
     networks:
       - book-example
   php:
