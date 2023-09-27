@@ -6,4 +6,3 @@ composer.phar
 # composer.lock
 
 /.idea/
-/composer.lock
