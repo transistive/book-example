@@ -11,12 +11,11 @@ return
         'default_environment' => 'default',
         'default' => [
             'adapter' => 'mysql',
-            'host' => '127.0.0.1',
-            'name' => 'test',
-            'user' => 'test',
-            'pass' => 'sql',
-            'port' => '3306',
-            'charset' => 'utf8',
+            'host' => $_ENV['SQL_HOST'] ?? 'sql',
+            'name' => $_ENV['SQL_NAME'] ?? 'test',
+            'user' => $_ENV['SQL_USER'] ?? 'test',
+            'pass' => $_ENV['SQL_PASS'] ?? 'sql',
+            'port' => $_ENV['SQL_PORT'] ?? 3306
         ],
     ],
     'version_order' => 'creation'

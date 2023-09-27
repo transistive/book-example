@@ -52,3 +52,5 @@ services:
         condition: service_healthy
       graph:
         condition: service_healthy
+    env_file:
+      - .env

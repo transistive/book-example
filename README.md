@@ -4,8 +4,12 @@
 Installation instructions:
 
 ```sh
+# clone the repository
 git clone git@github.com transistive/book-example.git
+# change to project root directory
 cd book-example
+# copy the default environment (works out of the box with the current docker compose file)
+cp .env.example .env
 
 # install PHP all libraries
 docker compose run php composer install
