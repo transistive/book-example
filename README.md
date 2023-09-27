@@ -5,7 +5,7 @@ Installation instructions:
 
 ```sh
 # clone the repository
-git clone git@github.com transistive/book-example.git
+git clone git@github.com:transistive/book-example.git
 # change to project root directory
 cd book-example
 # copy the default environment (works out of the box with the current docker compose file)

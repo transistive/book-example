@@ -13,7 +13,7 @@ class NodeRepository
     {
     }
 
-    public function storeRowsAsNodes(TablesEnum $table, iterable $rows, int $chunkSize = 2000): ResultSummary
+    public function storeRowsAsNodes(TablesEnum $table, iterable $rows): ResultSummary
     {
         $tag = $table->asTag();
         return $this->session->run(<<<CYPHER
