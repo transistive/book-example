@@ -12,13 +12,22 @@ require __DIR__.'/vendor/autoload.php';
 $time = microtime(true);
 
 // Create a driver to connect to Neo4J with user Neo4J and password test
-$driver = Driver::create('neo4j://neo4j:test@localhost');
+$driver = Driver::create($_ENV['GRAPH_DSN'] ?? 'neo4j://neo4j:test@graph');
 // Verify the connectivity beforehand to make sure the connection was successful.
 $driver->verifyConnectivity() ?? throw new Error('Cannot connect to database');
 // You can run queries on a session
 $session = $driver->createSession();
 
-$pdo = new PDORepository(new PDO('mysql:host=127.0.0.1;port=3306;dbname=test', 'test', 'sql'));
+$pdo = new PDORepository(new PDO(
+    sprintf(
+        'mysql:host=%s;port=%s;dbname=%s',
+        $_ENV['SQL_HOST'] ?? 'sql',
+        $_ENV['SQL_PORT'] ?? 3306,
+        $_ENV['SQL_NAME'] ?? 'test'
+    ),
+    $_ENV['SQL_USER'] ?? 'test',
+    $_ENV['SQL_PASS'] ?? 'sql'
+));
 $nodes = new NodeRepository($session);
 $relationships = new RelationshipRepository($session);
 
@@ -32,7 +41,6 @@ $session->run('CREATE CONSTRAINT article_id IF NOT EXISTS FOR (a:Article) REQUIR
 $session->run('CREATE CONSTRAINT comment_id IF NOT EXISTS FOR (a:Comment) REQUIRE a.id IS UNIQUE');
 $session->run('CREATE CONSTRAINT user_id IF NOT EXISTS FOR (a:User) REQUIRE a.id IS UNIQUE');
 $session->run('CREATE CONSTRAINT tag_id IF NOT EXISTS FOR (a:Tag) REQUIRE a.id IS UNIQUE');
-$session->run('CREATE CONSTRAINT article_tag_id IF NOT EXISTS FOR (a:ArticleTag) REQUIRE a.id IS UNIQUE');
 $session->run('CREATE CONSTRAINT category_id IF NOT EXISTS FOR (a:Category) REQUIRE a.id IS UNIQUE');
 
 Helper::logCreatedNodes(TablesEnum::ARTICLES, $nodes->storeRowsAsNodes(TablesEnum::ARTICLES, $pdo->yieldRows(TablesEnum::ARTICLES)));
