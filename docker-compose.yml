@@ -30,6 +30,7 @@ services:
       - '7474:7474'
     environment:
       NEO4J_AUTH: neo4j/test
+      NEO4J_dbms_security_auth__minimum__password__length: 4
     healthcheck:
       test: "wget -q --method=HEAD http://localhost:7474 || exit 1"
       interval: 30s
@@ -37,3 +38,17 @@ services:
       retries: 5
     networks:
       - book-example
+  php:
+    build:
+      context: .
+    container_name: 'book-example-php'
+    networks:
+      - book-example
+    working_dir: /opt/project
+    volumes:
+      - ./:/opt/project
+    depends_on:
+      sql:
+        condition: service_healthy
+      graph:
+        condition: service_healthy
